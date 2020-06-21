@@ -49,5 +49,6 @@ Atualizar algus detalhes nas placas:
 - Padronizar os trimpots de luminosidade no LCD
 - Trocar D2 por D3 na conexão do arduino com o mcp2515 para manter compatibilidade com a biblioteca
 
+[volta](https://github.com/Tecnomobele-FGA/Sobre-o-Tecnomobele)
 
 [volta](../Sobre-o-Tecnomobele/README.md)
