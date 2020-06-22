@@ -41,6 +41,9 @@ Os demais componentes do módulo são todos componentes discretos e há dois sen
 O módulo também será alojado numa caixa padrão Patola PB115 com conectores específicos para cada funcionalidade, com pinagem diferenciados para evitar trocas. Os conectores para display, alimentação 12 volts, CAN também são padronizadas. 
 
 
+A foto na figura a seguir mostra a caixa PB115 com a proposta de placa de circuito impresso com na parte de frente os conectores de entrada dos sensores e saída de acionamento. Na parte de traz, entrada para programar o arduino nano, o conector para o dislay, interface CAN e alimentação de 12Vdc.     
+
+![](fotos/foto_placa_instrum.jpg)
 ## Anotações
 
 Atualizar algus detalhes nas placas:
