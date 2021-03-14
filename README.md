@@ -1,5 +1,7 @@
 # Módulos de instrumentação 
 
+`Documentos/GitHub/Modulo-instrumentacao`
+
 Este módulo tem como função monitorar os sensores de temperatura do sistema de arrefecimento, os sensor de velocidade e o nível de óleo de freio, e disponibiliza os valores no barramento CAN.
 
 O módulo foi desenvolvido originalmente para o BR800 e pode ser adaptada para as necessidades da Van.
