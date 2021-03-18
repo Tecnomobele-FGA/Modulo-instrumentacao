@@ -209,6 +209,7 @@ O controle de hidro-vácuo tem que também receber do barramento CAN a informaç
 
 A rotina de comunicação J1939 terá diversos tipos de mensagens com prioridades e tempo de envios diferentes.
 
+### Velocidade da roda
 
 A primeira mensagem e com maior prioridade é a velocidade da roda.
 
@@ -230,7 +231,33 @@ Cosegui descobrir que Database CAN DBC do velocidade da roda é.
 | 7 | Relative, rear axle #2, left | 909 |
 | 8 | Relative, rear axle #2, right | 910 |
 
+
+Ainda não está claro como montar a partir do PGN o ID da mensagem.
+
+Vamos supor que o Source Adress (SA) é `0x90`
+
+Então a parte final do ID será `0xFEBF90`
+
+pegando a primeira parte da estrutura de mensagem do controlador do motor elétrico que é  `0x90`
+
+Juntando isso o message ID fica em 
+
+`0x90FEBF90`  ou  `2432614288`.
+
 No nosso caso vamos implementar somente a medição da velocidade das rodas dianteiras. 
+
+No dicionário de dados DBC a descrição fica
+
+```
+BO_ 2432614288 MODINSTRUM: 8 Vector__XXX
+ SG_ Velocity : 0|16@1+ (1,0) [0|10000] "km/h" Vector__XXX
+ 
+CM_ BO_ 2432614288 "Modulo de instrumentacao";
+CM_ SG_ 2432614288 Velocity "Velocidade da roda dianteira "; 
+```
+
+
+### Temperatura do motor
 
 Falta ainda descobrir o detalhamento desse PGN.
 
