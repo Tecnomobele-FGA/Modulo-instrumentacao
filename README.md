@@ -144,10 +144,33 @@ Havera a necessidade de avaliar a forma de medição quando o carro está andand
 
 Essa rotina também vai ser responsável para fazer o registro do odômetro, e gravar esses valores numa memória não volátil no próprio Arduino.
 
+
 A rotina disponibilizará os seguintes dados para comunicação CAN:
 
 - velocidade (analógica) 2 bytes, 0-120 km/h 
 - quilometragem (analógica) 2 byte, 0-10000 km 
+
+
+A rotina de medir velocidade por enquanto so calcula e encaminha a quantidade de pulsos por intervalo de tempo gerados pelo sensor de velocidade. 
+Numa primeira calibragem feito em 2018/09/13 do odometro levantou-se que (210-170=) 40 pulsos correspondiam a uma Distancia 8,3 metros.
+
+Cada pulso corresponde a um deslocamento  1 pulso = 8,30 / 40 = 0,2075 metro.
+
+Se a taxa de amostragem será de 100 ms, então uma mudança de pulsos neste intervalo, correponderá numa mudança de 0,2075 m / 0,1s =  2,075 m/s ou 7,47 km/h.
+
+Ou seja, a menor variação que pode ser medida com este sensor e mandado pelo barramenento CAN a cada em 100 ms será de aproximadamente 7,5 km/h, pois com este método não se pode medir quantidade de pulsos fracionados. 
+
+Deve se avaliar se uma outra maneira de calcular a velocidade fica melhor, por exemplo de medir o tempo entre pulsos e depois fazer a conversão para velicidade em Km/h.
+
+Caso for medir o tempo entre pulsos em (inteiro) milisegundos perde se precisão nas velocidades mais altas, mas ganha nas velocidades baixas:  
+
+* 120km/h - 0,006225 segundos ou 6ms 
+* 119km/h - 0,006277 segundos ou 6ms
+* 100km/h - 0,007470 segundos ou 7ms
+* 2 km/h -  0,3735 segundos ou 373ms
+* 1 km/h -  0,7470 segundos ou 747ms
+
+A velocidade em km/h ficará em V = 747/( tempo em milisegundos) 
 
 ## 3.3. Monitoramento de potência e consumo
 
@@ -250,7 +273,7 @@ No dicionário de dados DBC a descrição fica
 
 ```
 BO_ 2432614288 MODINSTRUM: 8 Vector__XXX
- SG_ Velocity : 0|16@1+ (1,0) [0|10000] "km/h" Vector__XXX
+ SG_ Velocity : 0|16@1+ (1,0) [0|120] "km/h" Vector__XXX
  
 CM_ BO_ 2432614288 "Modulo de instrumentacao";
 CM_ SG_ 2432614288 Velocity "Velocidade da roda dianteira "; 
