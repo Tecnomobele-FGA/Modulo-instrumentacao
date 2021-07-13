@@ -13,9 +13,13 @@ No caso do BR800 o sistema tem as seguintes funcionalidade.
 - Monitoramento de velocidade do veículo por meio de sensor de rotação na roda dianteira;
 - Monitoramento da temperatura do sistema de arrefecimento e comandar a bomba elétrica de circulação da água;
 - Monitoramento de nível do óleo de freio;
-- Monitoramento da tensão de 12v e 24v do carro;
+- Monitoramento da tensão de 12v do carro;
 - Monitoramento do consumo do próprio módulo,
 
+A primeira versão para o BR800 tinha que trabalhar com 12V e 24V por causa do contator de potência que trabalhava em 24v. 
+Isso deu muito problema e o projeto agora vai usar somente 12Volts para todos os subsistemas. 
+
+O mesmo hardware também vai ser usado para implementar o computador do bordo do carrinho de Golfe.
 
 No caso da VAN deve ter mais funcionalidades, pois poderá incorporar as demandas do sistema de servo-freio. 
 
@@ -32,17 +36,15 @@ O circuito de arrefecimento aproveita o radiador original do veículo adaptada p
 
 Este módulo tem por função monitorar a velocidade da roda por meio de um sensor magnética acoplado na roda do veículo. Este sensor fornece um trêm de pulsos proporcional à velocidade de roda. O sensor de óleo de freio é um contato aberto montado na tampa do reservatório de óleo e também é monitorado em intervalos regulares.
  
-O módulo monitora 4 sensores de temperatura analógicos LM35 que estão insatalados no circuito de arrefecimento do motor elétrico e seu controlador. A partir da informação da temperatura o módulo comanda o ligamento da bomba circulação de água deste circuito. A bomba pode ser acionado por uma tensão de 24V ou 12V configurada na placa. 
+O módulo monitora 4 sensores de temperatura analógicos LM35 que estão insatalados no circuito de arrefecimento do motor elétrico e seu controlador. A partir da informação da temperatura o módulo comanda o ligamento da bomba circulação de água deste circuito. A bomba pode ser acionado por uma tensão de 12V configurada na placa. 
 
  
-O módulo monitora ainda a tensão e corrente da sua própria alimentação 12 Volts, e também monitora a corrente e tensão do circuito de 24Volts.  
+O módulo monitora ainda a tensão e corrente da sua própria alimentação 12 Volts.  
 Da mesma forma do módulo anterior, escolheu-se implementar este módulo usando Arduino e as figuras a seguir mostram o esquema eletrônico e a placa de circuito impresso.
-
-![](figuras/Esquema_Mod_instrumentacao.jpg)
 
 
 Da mesma forma que o módulo de luzes, a comunicação usa o MCP2515 que está ligado por meio da interface SPI ao microcontrolador Arduino.
-Os demais componentes do módulo são todos componentes discretos e há dois sensores de corrente ACS712 para monitorar o consumo do módulo.  
+Os demais componentes do módulo são todos componentes discretos e há um sensor de corrente ACS712 para monitorar o consumo do módulo.  
 
 
 ![](figuras/placa_mod_sinal.jpg)
@@ -56,6 +58,8 @@ A foto na figura a seguir mostra a caixa PB115 com a proposta de placa de circui
 
 ![](fotos/foto_placa_instrum.jpg)
 
+![](figuras/placa_comp_mod_sinal.png)
+
 ### Conectores dos sensores de temperatura
 
 ### Acionamento da bomba de circulação
@@ -65,14 +69,15 @@ A foto na figura a seguir mostra a caixa PB115 com a proposta de placa de circui
 ### Sensores do subsistema de freio
 
 
-### Conector CANA conexão com o barramento CAN é por meio de um conector DB9 macho seguindo o padrão do [Sparkfun  CAN Shield ](https://www.sparkfun.com/products/13262).
+### Conector CANPinagem do conector DB9 macho para ligar o barramento CAN.
 
-| pino | descrição |
-|:----:|:---------:|
-|   2  |   GND     |
-|   3  |   CANH    |
-|   5  |   CANL    |
-|   9  |   12V     |
+| pino	| função |
+|-----|---------|
+|  2  | CAN-L |
+|  7  | CAN-H |
+|  3  | GND   |
+|  9  | 12V   |
+
 
 
 ### Conector Display LCD
