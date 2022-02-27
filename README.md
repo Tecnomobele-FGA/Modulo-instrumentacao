@@ -29,75 +29,136 @@ O diagrama de blocos mostra as entradas e saídas deste novo modulo de instrumen
 
 ![](figuras/Diagrama_blocos_Mod_Instrum.jpg)
 
-O circuito de arrefecimento aproveita o radiador original do veículo adaptada para a nova configuração. O diagrama blocos a seguir mostra o circuito.
+
+## 2.1. Esquema elétrico 
+
+O esquema elétrico da placa de instrumentação versão fev/2022 está mostrado a seguir.
+
+![](figuras/Esquema_Mod_instrumentacao2.jpg)
+
+A placa de circuito impresso montado com o display (versão fev/2022) está mostrada a seguir.
+
+![](fotos/foto_placa_instrum_lcd.jpg)
+
+A placa de instrumentação foi montada para permitir alguns ajustes de hardware ao longo do seu desenvolvimento e a versão fev/2022 contem:
+
+1. Saída para display LCD
+2. Controlador CAN
+3. Entrada para sensor indutivo de velocidade
+4. Entrada de sensor presença de óleo de freio
+5. Medidor do próprio consumo de energia com INA219
+6. 6 entradas ou saidas analógicos ou digitais
+que podem ser montados conforme necessidade no matriz contatos
+7. Saída com rele
 
 
-![Circuito termico](figuras/tela_sistema_radiador_VEBR.jpg)
+O módulo pode ser alojado numa caixa padrão Patola PB114 com conectores específicos para cada funcionalidade, com pinagem diferenciados para evitar trocas. Os conectores para display, alimentação 12 volts, CAN também são padronizadas. 
 
-Este módulo tem por função monitorar a velocidade da roda por meio de um sensor magnética acoplado na roda do veículo. Este sensor fornece um trêm de pulsos proporcional à velocidade de roda. O sensor de óleo de freio é um contato aberto montado na tampa do reservatório de óleo e também é monitorado em intervalos regulares.
- 
-O módulo monitora 4 sensores de temperatura analógicos LM35 que estão insatalados no circuito de arrefecimento do motor elétrico e seu controlador. A partir da informação da temperatura o módulo comanda o ligamento da bomba circulação de água deste circuito. A bomba pode ser acionado por uma tensão de 12V configurada na placa. 
-
- 
-O módulo monitora ainda a tensão e corrente da sua própria alimentação 12 Volts.  
-Da mesma forma do módulo anterior, escolheu-se implementar este módulo usando Arduino e as figuras a seguir mostram o esquema eletrônico e a placa de circuito impresso.
-
-
-Da mesma forma que o módulo de luzes, a comunicação usa o MCP2515 que está ligado por meio da interface SPI ao microcontrolador Arduino.
-Os demais componentes do módulo são todos componentes discretos e há um sensor de corrente ACS712 para monitorar o consumo do módulo.  
-
-
-![](figuras/placa_mod_sinal.jpg)
-
-## 1.1. Alojamento e conexões
-
-O módulo também será alojado numa caixa padrão Patola PB115 com conectores específicos para cada funcionalidade, com pinagem diferenciados para evitar trocas. Os conectores para display, alimentação 12 volts, CAN também são padronizadas. 
-
-
-A foto na figura a seguir mostra a caixa PB115 com a proposta de placa de circuito impresso com na parte de frente os conectores de entrada dos sensores e saída de acionamento. Na parte de traz, entrada para programar o arduino nano, o conector para o dislay, interface CAN e alimentação de 12Vdc.     
-
-![](fotos/foto_placa_instrum.jpg)
 
 ![](figuras/placa_comp_mod_sinal.png)
 
-### Conectores dos sensores de temperatura
+Na parte de traz a placa tem a entrada para programar o arduino nano, o conector para o RJ45 para o dislay, interface CAN enquanto na parte de frente a placa tem as entradas para alimentação de 12Vdc, saída para o rele e as entradas dos sensores separadas em dois conectores. O conector J4 Minifit 6 pinos é destindao para o sensor de velocidade e o sendor de nível de óleo.
+O conector J5 minifit de 8 pinos recebe as entradas programáveis.      
 
-### Acionamento da bomba de circulação
-
-### Sensor de velocidade
-
-### Sensores do subsistema de freio
-
-
-### Conector CANPinagem do conector DB9 macho para ligar o barramento CAN.
+## 2.2. Conector CANO conector CAN segue o padrão do projeto com o DB9 macho na placa. Pinagem do conector DB9 macho pode ser ajustado para dois tipos de padrões das ligações CAN. Essa escolha é feito por meio de estrapes (ou ligaçoes soldados) na placa de circuito impresso nos jumpers J12 e J13.
+A pinagem configurada na placa é mostrada na tabela a seguir.
 
 | pino	| função |
 |-----|---------|
 |  2  | CAN-L |
 |  7  | CAN-H |
 |  3  | GND   |
-|  9  | 12V   |
+
+Se for necessário pode se trocar a pinagem para seguir o padrão usado no OBDII.
+
+
+Da mesma forma que o módulo de luzes, a comunicação usa o MCP2515 que está ligado por meio da interface SPI ao microcontrolador Arduino.
+
+## 2.3. Conector Display LCD
+A primeira versão da placa de instrumentação tinha um conector mini DIN de 8 vias. 
+Este conector se mostrou muito difícil de soldar e comprar, por isso se optou em usar um conector RJ45 que é amplamante usado no mercado.
+
+Pinagem do conector RJ45 para ligar o LCD.
+
+| RJ45 | 	função LCD |	Origem |
+|---|--------|-------------|
+| 1 | GND    | Fonte       |  
+| 2 | Vcc    | Vcc do Arduino | 
+| 3 | Vo     | Trimpot     |
+| 4 | RW     | D6 Arduino  |
+| 5 | Enable | D9 Arduino  |
+| 6 | Reset  | D7 Arduino  |
+| 7 | RS     | D8 Arduino  |
+| 8 | sem uso | sem uso    |
 
 
 
-### Conector Display LCD
-Conecor mini DIN. 
+## 2.1. Medidor de velocidade
 
-Pinagem do conector mini DIN femea para ligar o LCD.
+O medidor de velocidade está implementado por meio de um sensor indutivo contador de pulso.
+Este contador de pulsos está ligado no BR800 no cabo do velocimetro que originalmente ia diretamente para o painel. O mostrador origal era um trandutor mecânico que mostrava a velocidade no painel. 
 
-| mini Din | 	função LCD |	Origem |
-|----------|------------|---------|
-|   | RS     | D7 Arduino  |
-|   | RW     |D8 Arduino  |
-|   | Enable | D9 Arduino |
-|   | Reset  | D6 Arduino |
-|   | Vcc    | Vcc do Arduino | 
-|   | GND    | Fonte | 
-|   | Vo     | Trimpot |
+O cabo do velocímetro entre diretamente no sensor que transforme a rotação em pulsos.  
+
+![](fotos/foto_sensor_velocidade.jpg)
+
+O sensor é alimentado com 12 volts e a sua sáida é do tipo coletar aberto, permitindo uma interface simples na placa do módulo de instrumentação. 
+
+A saída do sensor de velocidade é do tipo coletor aberto NPN. 
+Os pinos 1,2, e 3 do conector J4 ligam o sensor
+
+| J2| 	função |	Sensor   |
+|---|--------|------------|
+| 1 | 12V    | cor do fio |  
+| 2 | Sinal  | cor do fio |
+| 3 | GND    | cor do fio |
+
+## 2.2. Sensor de nível de oleo de freio
+
+O sensor de óleo de freio é um contato aberto montado na tampa do reservatório de óleo.
+Ele compartilha o conector J2 conforme a pinagem mostrada na tabela a seguir.
+
+| J2| 	função |	Sensor   |
+|---|--------|------------|
+| 4 | 12V    | cor do fio |  
+| 5 | Sinal  | cor do fio |
+| 6 | GND    | cor do fio |
+
+## 2.3. Sensor de corrente
+
+O sensor de corrente que está sendo usado no GamaGolfe é um sensor da LEM conforme mostrado na figura a seguir.
+Este sensor será ligada em uma das entradas analógiacas do conector J5 
+
+![](fotos/foto_sensor_corrente.jpg)
+
+O sensor é alimentado com 5 volts e a sua sáida é um sinal analógico de xxx a xxx volts. 
+
+Os pinos 1,2, e 8 do conector J5 ligam o sensor
+
+| J5| 	função |	Sensor   |
+|---|--------|------------|
+| 1 | 5V     | cor do fio |  
+| 2 | Sinal  | cor do fio |
+| 8 | GND    | cor do fio |
+
+[Datasheet do sensor de corrente](https://www.lem.com/sites/default/files/products_datasheets/ho_50_250-s-0100_series.pdf)
+
+![](figuras/sensor_corrente_pinagem.jpg)
+
+![](figuras/esquema_sensor_corrente.jpg)
+
+## 2.4. Controle de temperatura
+
+O circuito de arrefecimento aproveita o radiador original do veículo adaptada para a nova configuração. O diagrama blocos a seguir mostra o circuito.
 
 
-O modulo de instrumentação ainda precisa de algumas definições e por isso ainda não se implementou o hardware dedicado a ele. 
-# 3. Implementação da programação
+![Circuito termico](figuras/tela_sistema_radiador_VEBR.jpg)
+
+
+O módulo monitora os sensores de temperatura analógicos LM35 que estão insatalados no circuito de arrefecimento do motor elétrico e seu controlador. A partir da informação da temperatura o módulo comanda o ligamento da bomba circulação de água deste circuito. A bomba pode ser acionado por uma tensão de 12V configurada na placa. 
+
+
+# 3. Implementação da programação
 
 A programação do modulo de instrumentação pode ser dividido em vários rotinas que rodam parelela no Arduino.
 
@@ -135,13 +196,6 @@ Além disso, a rotina disponibilizará os seguintes dados para comunicação via
 
 Essa rotina mede a velocidade da roda dianteira por meio de um sensor tipo contador de pulso, muito usado em sistema de taximetros.
 
-Este contador de pulsos está ligado no BR800 no cabo do velocimetro que originalmente ia diretamente para o painel. O mostrador origal era um trandutor mecânico que mostrava a velocidade no painel. 
-
-O cabo do velocímetro entre diretamente no sensor que transforme a rotação em pulsos.  
-
-![](fotos/foto_sensor_velocidade.jpg)
-
-O sensor é alimentado com 12 volts e a sua sáida é do tipo coletar aberto, permitindo uma interface simples na placa do módulo de instrumentação. 
 
 A rotina precisa atualizar os dados de velocidade do veículo a cada 100 ms, e a maneira mais simples de implementar a leitura é por meio de uma rotina de tratamento de interrupção. 
 
@@ -179,23 +233,19 @@ A velocidade em km/h ficará em V = 747/( tempo em milisegundos)
 
 ## 3.3. Monitoramento de potência e consumo
 
-A rotina de medição de potência e consumo avalia a cada segundo a tensão e a corrente elétrica consumida pelo módulo. 
+A rotina de medição de potência e consumo avalia a cada segundo a tensão, a corrente elétrica e a potência elétrica e a energia consumida pelo módulo. O componente centrar é o INA219.
 
 As entradas são 
 
 - tensão 12 v (analógica), 1 byte, 0-20V
-- tensão 24 v (analógica), 1 byte, 0-40V
 - corrente 12v (analógica), 1 byte, 0 - 5 Amp
-- corrente 24v (analógica), 1 byte, 0 - 5 Amp
 
 As saídas da rotina são as mesmas das entradas acrescidas de 
 
 - potência 12v (analógica), 1 byte , 0-100W
-- potência 24v (analógica), 1 byte , 0-100W
 - Consumo acumulada 12v, 2 bytes, 0 - 1000kWh
-- Consumo acumulada 24v, 2 bytes, 0 - 1000kWh
 - Alarme tensão baixa 12v, bit 
-- Alarme tensão baixa 24v, bit
+
 
 ## 3.3. Rotina do mostrar os dados no painel
 
@@ -217,6 +267,9 @@ Nem toda informação medido pelo módulo será mostrado no painel.
 
 O painel, também vai monitorar alguns dados no barramento CAN e organizar e disponibilizar estes dados no painel.
 
+A primeira versão do display é 
+![](fotos/foto_display.jpg)
+
 ## 3.4. Rotina de controle do hidro-vácuo-elétrico
 Uma futura versão da placa para a VAN terá a função de controlar a bombda de vácuo do servo freio. 
 
@@ -233,11 +286,11 @@ Saída:
 O controle de hidro-vácuo tem que também receber do barramento CAN a informação do luz de freio, para poder verificar o funcionamento da efetividade do servo freio. 
 
 
-## 3.5. Comunicação J1939
+# 4. Comunicação J1939
 
 A rotina de comunicação J1939 terá diversos tipos de mensagens com prioridades e tempo de envios diferentes.
 
-### Velocidade da roda
+## 4.1 Velocidade da roda
 
 A primeira mensagem e com maior prioridade é a velocidade da roda.
 
@@ -285,7 +338,7 @@ CM_ SG_ 2432614288 Velocity "Velocidade da roda dianteira ";
 ```
 
 
-### Temperatura do motor
+## 4.2. Temperatura do motor
 
 Falta ainda descobrir o detalhamento desse PGN.
 
