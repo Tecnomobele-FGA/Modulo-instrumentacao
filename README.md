@@ -290,6 +290,34 @@ O controle de hidro-vácuo tem que também receber do barramento CAN a informaç
 
 A rotina de comunicação J1939 terá diversos tipos de mensagens com prioridades e tempo de envios diferentes.
 
+A configuração do CAN e Timer é mostrado no trecho a seguir.
+
+```
+#include <SPI.h>
+#include <mcp2515.h>
+#include <SPI.h>
+#include <mcp2515.h>
+
+int tempor_can1=0;
+int tempor_can2=2;
+
+void setup(void) 
+{ 
+ MsTimer2::set(100, BaseDeTempo); // dezimo segundos
+ MsTimer2::start();
+ mcp2515.reset();
+ mcp2515.setBitrate(CAN_125KBPS,MCP_8MHZ);
+ mcp2515.setNormalMode(); 
+}
+
+void BaseDeTempo(void)
+{
+ tempor_can1++;
+ tempor_can2++;
+} 
+
+```
+
 ## 4.1 Velocidade da roda
 
 A primeira mensagem e com maior prioridade é a velocidade da roda.
@@ -337,8 +365,73 @@ CM_ BO_ 2432614288 "Modulo de instrumentacao";
 CM_ SG_ 2432614288 Velocity "Velocidade da roda dianteira "; 
 ```
 
+O trecho do código que implementa isso no loop principal do programa no Arduino é:
 
-## 4.2. Temperatura do motor
+```
+if (tempor_can1 >= 5)  // a cada 0.1 segundos
+ {
+  tempor_can1=0;
+  canMsg1.can_id = 0x10FEBF90 | CAN_EFF_FLAG;  //  testando com 0x90FEBF90 tambem funcionou
+  canMsg1.can_dlc = 8;
+  canMsg1.data[0] = (Velocidade_Int & 0x00FF);  
+  canMsg1.data[1] = (Velocidade_Int >> 8) & 0x00FF;
+  canMsg1.data[2] = 0xFF;
+  canMsg1.data[3] = 0xFF;  
+  canMsg1.data[4] = 0xFF;  
+  canMsg1.data[5] = 0xFF;  
+  canMsg1.data[6] = 0xFF; 
+  canMsg1.data[7] = 0xFF;
+  mcp2515.sendMessage(&canMsg1);
+ }
+```
+
+O programa foi implementado e testado.
+
+## 4.1. Tensão e corrente da bateria principal e auxiliar
+
+Ainda não descobri qual PGN padrão para implementar este monitoramento e por isso vamos aproveitar o mesmo usado pelo controlador do motor CC brushless do BR800.
+
+O dicionário de dados está também no `/home/debian/sc/DBC/BRELETmotorV2.dbc`
+
+
+```
+BO_ 2416478878 EVEC2: 8 Vector__XXX
+ SG_ Voltage : 0|16@1+ (0.1,-1000) [0|500] "v" Vector__XXX
+ SG_ Current :16|16@1+ (0.1,-1000) [-500|500] "A" Vector__XXX
+ SG_ Temperature :32|8@1+ (0.1,40) [0|100] "A" Vector__XXX
+ SG_ Forward  :40|1@0+ (1,0) [0|0] "-" Vector__XXX
+ SG_ Backward :41|1@0+ (1,0) [0|0] "-" Vector__XXX 
+ SG_ Brake    :42|1@0+ (1,0) [0|0] "-" Vector__XXX 
+ SG_ Stop     :43|1@0+ (1,0) [0|0] "-" Vector__XXX 
+ SG_ Ready    :46|1@0+ (1,0) [0|0] "-" Vector__XXX 
+```
+Trecho implementado no arduino. 
+
+Tem que tomar cuidado para não mandar as duas mensagens um atras do outro sem o devido atraso entre as duas mensagens. 
+A rotina em Python no OBC (Beagle) não foi capaz de processa-lo em tempo hábil. 
+Pode ser que com o uso de filtros configurado no própro controlador can o processamento fica melhor, mas é prudente dar o devido delay entre as mensagens. 
+
+
+```
+if (tempor_can2 >= 5)  // a cada 0.5 segundos
+ {
+  tempor_can2=0;
+  canMsg1.can_id = 0x10088A9E | CAN_EFF_FLAG; 
+  canMsg1.can_dlc = 8;
+  canMsg1.data[0] = (Voltage_Int & 0x00FF);  
+  canMsg1.data[1] = (Voltage_Int >> 8) & 0x00FF;
+  canMsg1.data[2] = (Current_Int & 0x00FF); 
+  canMsg1.data[3] = (Current_Int >> 8) & 0x00FF;  
+  canMsg1.data[4] = 0xFF;  
+  canMsg1.data[5] = 0xFF;  
+  canMsg1.data[6] = 0xFF; 
+  canMsg1.data[7] = 0xFF;
+  mcp2515.sendMessage(&canMsg1);
+ }
+```
+
+
+## 4.3. Temperatura do motor
 
 Falta ainda descobrir o detalhamento desse PGN.
 
