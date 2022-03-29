@@ -135,11 +135,13 @@ O sensor é alimentado com 5 volts e a sua sáida é um sinal analógico de xxx 
 
 Os pinos 1,2, e 8 do conector J5 ligam o sensor
 
-| J5| 	função |	Sensor   |
-|---|--------|------------|
-| 1 | 5V     | cor do fio |  
-| 2 | Sinal  | cor do fio |
-| 8 | GND    | cor do fio |
+| pino sensor LEM| função | cor fio  |
+|:--------------:|--------|----------|
+| 1 | 5V     | vermelho |
+| 2 | GND    | preto    |
+| 3 | Sinal corrente | amarelo|
+| 4 | Vref   | branco   |
+
 
 [Datasheet do sensor de corrente](https://www.lem.com/sites/default/files/products_datasheets/ho_50_250-s-0100_series.pdf)
 
@@ -147,7 +149,26 @@ Os pinos 1,2, e 8 do conector J5 ligam o sensor
 
 ![](figuras/esquema_sensor_corrente.jpg)
 
-## 2.4. Controle de temperatura
+
+O conector J5 ainda aloja os outros sensores.
+
+| J5| função | cor fio  | Arduino |
+|---|--------|:--------:|:-------:|
+| 1 | 5V     | vermelho | Vcc     |
+| 2 | Sinal corrente | amarelo  | A0 |
+| 3 | Vref   | branco | ? 
+| 4 | tensão 48Vcc | ? | A7 |
+| 8 | GND    | preto    | GND|
+
+## 2.4. Transdutor de tensão da bateria de tração (48Vcc)
+
+O circuito que condiciona e atenua a tensão de 48Vcc é mostrado a seguir.
+
+![](figuras/transdutor48V.jpg)
+
+
+
+## 2.5. Controle de temperatura
 
 O circuito de arrefecimento aproveita o radiador original do veículo adaptada para a nova configuração. O diagrama blocos a seguir mostra o circuito.
 
